@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    restart: always
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - bot_network
+
+  monitor:
+    build: .
+    command: python monitor.py
+    restart: always
+    depends_on:
+      - bot
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - bot_network
+
+networks:
+  bot_network:
+    driver: bridge
