@@ -5,7 +5,6 @@
 
 import logging
 import requests
-import feedparser
 import re
 import os
 import time
@@ -13,6 +12,34 @@ import threading
 from datetime import datetime
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
+
+import requests
+import xml.etree.ElementTree as ET
+
+def fetch_news_from_rss(url, limit=5):
+    """جلب الأخبار من RSS بدون feedparser"""
+    news_items = []
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        root = ET.fromstring(response.content)
+        
+        for item in root.findall('.//item')[:limit]:
+            title = item.find('title')
+            link = item.find('link')
+            pub_date = item.find('pubDate')
+            
+            if title is not None and link is not None:
+                news_items.append({
+                    "title": title.text,
+                    "link": link.text,
+                    "published": pub_date.text if pub_date is not None else "غير متوفر"
+                })
+    except Exception as e:
+        print(f"خطأ في جلب الأخبار: {e}")
+    
+    return news_items
+
 
 # ============================================================================
 # إعدادات البوت
