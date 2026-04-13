@@ -10,6 +10,7 @@ from telegram.ext import Application, CommandHandler, CallbackQueryHandler, Cont
 logging.basicConfig(level=logging.INFO)
 
 # الحصول على التوكن
+import os
 TELEGRAM_BOT_TOKEN = os.getenv("8762858117:AAE0jACensGIe8EXi-tloIP7I95_ZgHiPjk")
 
 if not TELEGRAM_BOT_TOKEN:
